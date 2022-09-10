@@ -1,0 +1,3 @@
+packet TransmissionRequest {
+    // Empty request.
+}

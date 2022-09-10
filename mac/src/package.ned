@@ -1,0 +1,3 @@
+package mac;
+
+@license(LGPL);

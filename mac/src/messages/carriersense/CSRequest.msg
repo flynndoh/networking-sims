@@ -1,0 +1,3 @@
+message CSRequest {
+    // Empty message.
+}
