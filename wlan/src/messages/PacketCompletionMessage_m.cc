@@ -175,29 +175,16 @@ PacketCompletionMessage& PacketCompletionMessage::operator=(const PacketCompleti
 
 void PacketCompletionMessage::copy(const PacketCompletionMessage& other)
 {
-    this->packetId = other.packetId;
 }
 
 void PacketCompletionMessage::parsimPack(omnetpp::cCommBuffer *b) const
 {
     ::omnetpp::cMessage::parsimPack(b);
-    doParsimPacking(b,this->packetId);
 }
 
 void PacketCompletionMessage::parsimUnpack(omnetpp::cCommBuffer *b)
 {
     ::omnetpp::cMessage::parsimUnpack(b);
-    doParsimUnpacking(b,this->packetId);
-}
-
-int PacketCompletionMessage::getPacketId() const
-{
-    return this->packetId;
-}
-
-void PacketCompletionMessage::setPacketId(int packetId)
-{
-    this->packetId = packetId;
 }
 
 class PacketCompletionMessageDescriptor : public omnetpp::cClassDescriptor
@@ -205,7 +192,6 @@ class PacketCompletionMessageDescriptor : public omnetpp::cClassDescriptor
   private:
     mutable const char **propertyNames;
     enum FieldConstants {
-        FIELD_packetId,
     };
   public:
     PacketCompletionMessageDescriptor();
@@ -272,7 +258,7 @@ const char *PacketCompletionMessageDescriptor::getProperty(const char *propertyN
 int PacketCompletionMessageDescriptor::getFieldCount() const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
-    return base ? 1+base->getFieldCount() : 1;
+    return base ? 0+base->getFieldCount() : 0;
 }
 
 unsigned int PacketCompletionMessageDescriptor::getFieldTypeFlags(int field) const
@@ -283,10 +269,7 @@ unsigned int PacketCompletionMessageDescriptor::getFieldTypeFlags(int field) con
             return base->getFieldTypeFlags(field);
         field -= base->getFieldCount();
     }
-    static unsigned int fieldTypeFlags[] = {
-        FD_ISEDITABLE,    // FIELD_packetId
-    };
-    return (field >= 0 && field < 1) ? fieldTypeFlags[field] : 0;
+    return 0;
 }
 
 const char *PacketCompletionMessageDescriptor::getFieldName(int field) const
@@ -297,17 +280,12 @@ const char *PacketCompletionMessageDescriptor::getFieldName(int field) const
             return base->getFieldName(field);
         field -= base->getFieldCount();
     }
-    static const char *fieldNames[] = {
-        "packetId",
-    };
-    return (field >= 0 && field < 1) ? fieldNames[field] : nullptr;
+    return nullptr;
 }
 
 int PacketCompletionMessageDescriptor::findField(const char *fieldName) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
-    int baseIndex = base ? base->getFieldCount() : 0;
-    if (strcmp(fieldName, "packetId") == 0) return baseIndex + 0;
     return base ? base->findField(fieldName) : -1;
 }
 
@@ -319,10 +297,7 @@ const char *PacketCompletionMessageDescriptor::getFieldTypeString(int field) con
             return base->getFieldTypeString(field);
         field -= base->getFieldCount();
     }
-    static const char *fieldTypeStrings[] = {
-        "int",    // FIELD_packetId
-    };
-    return (field >= 0 && field < 1) ? fieldTypeStrings[field] : nullptr;
+    return nullptr;
 }
 
 const char **PacketCompletionMessageDescriptor::getFieldPropertyNames(int field) const
@@ -405,7 +380,6 @@ std::string PacketCompletionMessageDescriptor::getFieldValueAsString(omnetpp::an
     }
     PacketCompletionMessage *pp = omnetpp::fromAnyPtr<PacketCompletionMessage>(object); (void)pp;
     switch (field) {
-        case FIELD_packetId: return long2string(pp->getPacketId());
         default: return "";
     }
 }
@@ -422,7 +396,6 @@ void PacketCompletionMessageDescriptor::setFieldValueAsString(omnetpp::any_ptr o
     }
     PacketCompletionMessage *pp = omnetpp::fromAnyPtr<PacketCompletionMessage>(object); (void)pp;
     switch (field) {
-        case FIELD_packetId: pp->setPacketId(string2long(value)); break;
         default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'PacketCompletionMessage'", field);
     }
 }
@@ -437,7 +410,6 @@ omnetpp::cValue PacketCompletionMessageDescriptor::getFieldValue(omnetpp::any_pt
     }
     PacketCompletionMessage *pp = omnetpp::fromAnyPtr<PacketCompletionMessage>(object); (void)pp;
     switch (field) {
-        case FIELD_packetId: return pp->getPacketId();
         default: throw omnetpp::cRuntimeError("Cannot return field %d of class 'PacketCompletionMessage' as cValue -- field index out of range?", field);
     }
 }
@@ -454,7 +426,6 @@ void PacketCompletionMessageDescriptor::setFieldValue(omnetpp::any_ptr object, i
     }
     PacketCompletionMessage *pp = omnetpp::fromAnyPtr<PacketCompletionMessage>(object); (void)pp;
     switch (field) {
-        case FIELD_packetId: pp->setPacketId(omnetpp::checked_int_cast<int>(value.intValue())); break;
         default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'PacketCompletionMessage'", field);
     }
 }
@@ -467,9 +438,7 @@ const char *PacketCompletionMessageDescriptor::getFieldStructName(int field) con
             return base->getFieldStructName(field);
         field -= base->getFieldCount();
     }
-    switch (field) {
-        default: return nullptr;
-    };
+    return nullptr;
 }
 
 omnetpp::any_ptr PacketCompletionMessageDescriptor::getFieldStructValuePointer(omnetpp::any_ptr object, int field, int i) const

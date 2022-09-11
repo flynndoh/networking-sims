@@ -22,15 +22,12 @@ class PacketCompletionMessage;
  * <pre>
  * message PacketCompletionMessage
  * {
- *     // Identifier for packet that has been fully processed and that triggered this completion.
- *     int packetId;
  * }
  * </pre>
  */
 class PacketCompletionMessage : public ::omnetpp::cMessage
 {
   protected:
-    int packetId = 0;
 
   private:
     void copy(const PacketCompletionMessage& other);
@@ -46,9 +43,6 @@ class PacketCompletionMessage : public ::omnetpp::cMessage
     virtual PacketCompletionMessage *dup() const override {return new PacketCompletionMessage(*this);}
     virtual void parsimPack(omnetpp::cCommBuffer *b) const override;
     virtual void parsimUnpack(omnetpp::cCommBuffer *b) override;
-
-    virtual int getPacketId() const;
-    virtual void setPacketId(int packetId);
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const PacketCompletionMessage& obj) {obj.parsimPack(b);}

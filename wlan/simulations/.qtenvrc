@@ -1,9 +1,9 @@
 [General]
 last-configname=Experiment1
-last-runnumber=0
+last-runnumber=25
 
 [RunModeProfiles]
-run-playback-speed=15.488166189124811
+run-playback-speed=1.9498445997580451
 run-min-playback-speed=0.01
 run-max-playback-speed=100
 run-min-animation-speed=nan
