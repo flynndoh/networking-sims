@@ -105,7 +105,6 @@ The `Transmitter` handles `RequestPacketMessages` sent to it from the `Channel`.
 
 #### Channel
 The `Channel` facilitates the communication of `ResponsePackets` between the `Transmitter` and the `Recevier`. To kickoff the simulation's packet exchange, the `Channel` sends an initial `RequestPacketMessage` to the `Transmitter` and the `Transmitter` replies by creating and sending back a new `ResponsePacket`. Once the `Channel` receives the `ResponsePacket` from the `Transmitter`, it iterates though the `ResponsePacket's` bits and determines bit-wise if the `ResponsePacket` is to be marked as erroneous. The BER is approximated applying the complementary error function to the received signal-to-noise ratio. A uniform distribution is then randomly sampled, and if this sample is less than the calculated BER, the bit is erroneous and the `ResponsePacket` is marked as such. Some time later, the `ReponsePacket` is then forwarded to the `Receiver` where it is processed further. The exchange then restarts and the `Channel` sends yet another `RequestPacketMessage` to the `Transmitter` for another `ResponsePacket`.
-sends both the `PacketCompletionMessage` number of self messages
 
 #### Receiver
 The `Receiver` handles `ResponsePackets` sent to it from the `Channel`. When it receives one of these packets it logs statistics about the packet for post-simulation analysis.
