@@ -1,13 +1,14 @@
-#ifndef HELPERS_H_
-#define HELPERS_H_
+#ifndef MATHHELPERS_H_
+#define MATHHELPERS_H_
 
 #include <cmath>
 
-class Helpers {
+class MathHelpers {
   public:
     static double calculateEuclideanDistance(double positionX1, double positionY1, double positionX2, double positionY2);
     static double calculatePathLoss(double distanceMeters, double pathLossExp);
     static double calculateReceivedPower(double txPowerDBm, double pathLossDB);
+    static double calculateReceivedPower(double txPowerDBm, double pathLossDB, double gain);
     static double calculateSNRRelation(double receivedPowerDBm, double noisePowerDBm, double bitRate);
     static double normalToDecibels(double target);
     static double decibelsToNormal(double target);
@@ -15,4 +16,4 @@ class Helpers {
     static double calculatePacketErrorProbability(double packetLengthBits, double bitErrorRate);
 };
 
-#endif /* HELPERS_H_ */
+#endif /* MATHHELPERS_H_ */

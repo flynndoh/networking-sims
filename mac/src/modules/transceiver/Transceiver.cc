@@ -171,14 +171,14 @@ void Transceiver::handleSignalStop(SignalStop *msg) {
         MacMessage *storedMacMessage = (MacMessage *) storedSignalStart->decapsulate();
         assert(storedMacMessage != nullptr);
 
-        double distance = Helpers::calculateEuclideanDistance(storedSignalStart->getPositionX(),
+        double distance = MathHelpers::calculateEuclideanDistance(storedSignalStart->getPositionX(),
                                                               storedSignalStart->getPositionY(),
                                                               transceiverPositionX,
                                                               transceiverPositionY);
         double bitErrorRate = calculateBitErrorRate(distance, storedSignalStart->getTransmitPowerDBm());
 
         int packetLengthBits = storedMacMessage->getPacketLengthBits();
-        double packetErrorProbability = Helpers::calculatePacketErrorProbability(packetLengthBits, bitErrorRate);
+        double packetErrorProbability = MathHelpers::calculatePacketErrorProbability(packetLengthBits, bitErrorRate);
 
         // If this check fails, halt any further processing.
         double uniformDistribution01 = uniform(0, 1);
@@ -226,10 +226,10 @@ void Transceiver::handleSignalStop(SignalStop *msg) {
 }
 
 double Transceiver::calculateBitErrorRate(double distance, double signalTxPowerDBm) {
-    double pathLossDB = Helpers::normalToDecibels(Helpers::calculatePathLoss(distance, pathLossExponent));
-    double receivedPowerDBm = Helpers::calculateReceivedPower(signalTxPowerDBm, pathLossDB);
-    double SNRRelation = Helpers::calculateSNRRelation(receivedPowerDBm, noisePowerDBm, bitRate);
-    double bitErrorRate = Helpers::calculateBitError(SNRRelation);
+    double pathLossDB = MathHelpers::normalToDecibels(MathHelpers::calculatePathLoss(distance, pathLossExponent));
+    double receivedPowerDBm = MathHelpers::calculateReceivedPower(signalTxPowerDBm, pathLossDB);
+    double SNRRelation = MathHelpers::calculateSNRRelation(receivedPowerDBm, noisePowerDBm, bitRate);
+    double bitErrorRate = MathHelpers::calculateBitError(SNRRelation);
 
     EV << HERE << "INFO: BER Calculations --> "
        << "  pathLossDB = " << pathLossDB
@@ -278,9 +278,9 @@ double Transceiver::calculateCurrentSignalPower() {
     for (std::map<int, SignalStart *>::iterator iter = currentTransmissions.begin();
          iter != currentTransmissions.end(); ++iter) {
         SignalStart *storedSignal = (SignalStart *) iter->second;
-        currentSignalPower += Helpers::decibelsToNormal(storedSignal->getTransmitPowerDBm());
+        currentSignalPower += MathHelpers::decibelsToNormal(storedSignal->getTransmitPowerDBm());
     }
-    return Helpers::normalToDecibels(currentSignalPower);
+    return MathHelpers::normalToDecibels(currentSignalPower);
 }
 
 void Transceiver::handleTransmissionRequest(TransmissionRequest *msg) {

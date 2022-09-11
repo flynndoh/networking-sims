@@ -3,7 +3,7 @@
 
 #include <omnetpp.h>
 #include "../../Utils.h"
-#include "../../Helpers.h"
+#include "../../MathHelpers.h"
 #include "../../messages/signal/SignalStart_m.h"
 #include "../../messages/signal/SignalStop_m.h"
 #include "../../messages/carriersense/CSRequest_m.h"
@@ -32,13 +32,13 @@ class Transceiver : public omnetpp::cSimpleModule {
 
   private:
     // MAC layer gate ids.
-    int fromMACGateId, toMACGateId,
+    int fromMACGateId, toMACGateId;
 
     // Channel gate ids.
     int fromChannelGateId, toChannelGateId;
 
     // Used to filter addressee's.
-    int parentNodeId,
+    int parentNodeId;
 
     // Used to simulate the effects of different ack message sizes in bits.
     int acknowledgementSize;
