@@ -39,7 +39,8 @@
 # End of https://www.toptal.com/developers/gitignore/api/c++
 simulations/results/
 
-src/analysis/results/
+simulations/.qtenvrc
+simulations/.cmdenv-log
 
 
 ### CLion ###
@@ -317,3 +318,33 @@ cython_debug/
 #*/.idea/
 
 # End of https://www.toptal.com/developers/gitignore/api/c++,clion,python
+
+# simulations/results/
+
+# src/analysis/results/
+/**/results/
+
+# ignore the settings folder
+/.settings/
+
+# ignore the build files
+/out/
+
+# ignore the debug binary
+/src/wlan_dbg.exe
+
+# ignore the release binary
+/src/wlan.exe
+
+# ignore the generated MSG files
+*_m.h
+*_m.cc
+
+simulations/csma_3_nodes/.qtenvrc
+
+src/.nfs*
+*.cmdenv*
+*.qtenvrc
+
+/tables
+/images

@@ -58,10 +58,6 @@
 *_m.h
 *_m.cc
 
-simulations/.qtenvrc
-
-simulations/basic_simulation/.qtenvrc
-
 simulations/csma_3_nodes/.qtenvrc
 
 src/.nfs*
