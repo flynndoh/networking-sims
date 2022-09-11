@@ -1,4 +1,4 @@
-package mac.modules.channel_;
+package mac.modules._channel;
 
 simple Channel
 {

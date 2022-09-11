@@ -4,7 +4,7 @@ import mac.modules.packetgenerator.PacketGenerator;
 import mac.modules.packetsink.PacketSink;
 import mac.modules.mediumaccesscontrol.MediumAccessControl;
 import mac.modules.transceiver.Transceiver;
-import mac.modules.channel_.Channel;
+import mac.modules._channel.Channel;
 
 network csma_3_nodes
 {
@@ -40,7 +40,7 @@ network csma_3_nodes
             @display("p=425,274");
         }
 
-        channel_: Channel {
+        _channel: Channel {
             @display("p=244,398");
             gates:
                 fromTransmitters[3];
@@ -61,27 +61,27 @@ network csma_3_nodes
         tx_packetgenerator1.fromMac <-- tx_mac1.toHigherLayer;
         tx_mac1.toTransceiver --> tx_txrx1.fromMAC;
         tx_mac1.fromTransceiver <-- tx_txrx1.toMAC;
-        tx_txrx1.toChannel --> channel_.fromTransmitters[0];
-        tx_txrx1.fromChannel <-- channel_.toTransmitters[0];
+        tx_txrx1.toChannel --> _channel.fromTransmitters[0];
+        tx_txrx1.fromChannel <-- _channel.toTransmitters[0];
 
         tx_packetgenerator2.toMac --> tx_mac2.fromHigherLayer;
         tx_packetgenerator2.fromMac <-- tx_mac2.toHigherLayer;
         tx_mac2.toTransceiver --> tx_txrx2.fromMAC;
         tx_mac2.fromTransceiver <-- tx_txrx2.toMAC;
-        tx_txrx2.toChannel --> channel_.fromTransmitters[1];
-        tx_txrx2.fromChannel <-- channel_.toTransmitters[1];
+        tx_txrx2.toChannel --> _channel.fromTransmitters[1];
+        tx_txrx2.fromChannel <-- _channel.toTransmitters[1];
 
         tx_packetgenerator3.toMac --> tx_mac3.fromHigherLayer;
         tx_packetgenerator3.fromMac <-- tx_mac3.toHigherLayer;
         tx_mac3.toTransceiver --> tx_txrx3.fromMAC;
         tx_mac3.fromTransceiver <-- tx_txrx3.toMAC;
-        tx_txrx3.toChannel --> channel_.fromTransmitters[2];
-        tx_txrx3.fromChannel <-- channel_.toTransmitters[2];
+        tx_txrx3.toChannel --> _channel.fromTransmitters[2];
+        tx_txrx3.fromChannel <-- _channel.toTransmitters[2];
 
         rx_packetsink.toMAC --> rx_mac.fromHigherLayer;
         rx_packetsink.fromMAC <-- rx_mac.toHigherLayer;
         rx_mac.toTransceiver --> rx_txrx.fromMAC;
         rx_mac.fromTransceiver <-- rx_txrx.toMAC;
-        rx_txrx.toChannel --> channel_.fromReceiver;
-        rx_txrx.fromChannel <-- channel_.toReceiver;
+        rx_txrx.toChannel --> _channel.fromReceiver;
+        rx_txrx.fromChannel <-- _channel.toReceiver;
 }
