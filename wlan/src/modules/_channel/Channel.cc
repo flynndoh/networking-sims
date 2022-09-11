@@ -32,12 +32,16 @@ void Channel::initialize () {
     send(new RequestPacketMessage(), toTransmitterGateId);
 }
 
+void Channel::finish() {
+    cancelAndDelete(completion);
+}
+
 void Channel::handleMessage(omnetpp::cMessage* msg) {
     if (msg == completion) {
-        EV << "Channel::handleMessage: handling completion event" << std::endl;
+        EV << HERE << "handling completion event" << std::endl;
         handleCompletion();
     } else if ((dynamic_cast<ResponsePacket*>(msg)) && (msg->arrivedOn(fromTransmitterGateId))) {
-        EV << "Channel::handleMessage: handling an incoming packet" << std::endl;
+        EV << HERE << "handling an incoming packet" << std::endl;
         handleIncomingPacket((ResponsePacket*) msg);
     } else {
         error("Channel::handleMessage: received unforeseen message!");
@@ -47,7 +51,7 @@ void Channel::handleMessage(omnetpp::cMessage* msg) {
 void Channel::handleIncomingPacket(ResponsePacket* pkt) {
     // Is the channel currently busy with another packet?
     if (currentPacket != nullptr) {
-        EV << "Channel::handleIncomingPacket: got packet while channel is busy, dropping it" << std::endl;
+        EV << HERE << "got packet while channel is busy, dropping it" << std::endl;
         delete pkt;
         return;
     }
@@ -94,15 +98,15 @@ void Channel::handleIncomingPacket(ResponsePacket* pkt) {
 }
 
 double Channel::calculateBitErrorRate() {
-    double pathLossDB = normalToDecibels(calculatePathLoss(nodeDistance, pathLossExponent));
+    double pathLossDB = MathHelpers::normalToDecibels(MathHelpers::calculatePathLoss(nodeDistance, pathLossExponent));
     double gain = determineGain(nextBitChannelState);
-    double receivedPowerDBm = calculateReceivedPower(txPowerDBm, gain, pathLossDB);
-    double SNRRelation = calculateSNRRelation(receivedPowerDBm, noisePowerDBm, bitRate);
+    double receivedPowerDBm = MathHelpers::calculateReceivedPower(txPowerDBm, pathLossDB, gain);
+    double SNRRelation = MathHelpers::calculateSNRRelation(receivedPowerDBm, noisePowerDBm, bitRate);
 
     // Calculate bit error rate using the complementary error function.
-    double bitErrorRate = erfc(sqrt(2 * decibelsToNormal(SNRRelation)));
+    double bitErrorRate = erfc(sqrt(2 * MathHelpers::decibelsToNormal(SNRRelation)));
 
-    EV << "Channel::calculateBitErrorRate: BER Calculations --> "
+    EV << HERE << "BER Calculations -->"
            << "  pathLossDB = " << pathLossDB
            << ", gain = " << gain
            << ", receivedPowerDBm = " << receivedPowerDBm
@@ -118,42 +122,18 @@ double Channel::determineGain(bool channelState) {
     return (nextBitChannelState == GOOD) ? channelGainGoodDB : channelGainBadDB;
 }
 
-double Channel::calculatePathLoss(double distanceMeters, double pathLossExp) {
-    return (distanceMeters > 1) ? pow(distanceMeters, pathLossExp) : 1;
-}
-
-double Channel::calculateReceivedPower(double txPowerDBm, double gain, double pathLossDB) {
-    return txPowerDBm + gain - pathLossDB;
-}
-
-double Channel::calculateSNRRelation(double receivedPowerDBm, double noisePowerDBm, double bitRate) {
-    return receivedPowerDBm - (noisePowerDBm + normalToDecibels(bitRate));
-}
-
-double Channel::normalToDecibels(double target) {
-    return 10 * log10(target);
-}
-
-double Channel::decibelsToNormal(double target) {
-    return pow(10, (target / 10));
-}
-
 void Channel::handleCompletion() {
     if (currentPacket == nullptr) {
         error("Channel::handleCompletion: no packet to complete");
     }
 
     // Send current packet to receiver.
-    EV << "Channel::handleCompletion: Sending packet to receiver" << std::endl;
+    EV << HERE << "Sending packet to receiver" << std::endl;
     send(currentPacket, toReceiverGateId);
 
     currentPacket = nullptr;
 
     // Ask transmitter for a new packet.
-    EV << "Channel::handleCompletion: Asking transmitter for new packet" << std::endl;
+    EV << HERE << "Asking transmitter for new packet" << std::endl;
     send(new RequestPacketMessage(), toTransmitterGateId);
-}
-
-Channel::~Channel() {
-    cancelAndDelete(completion);
 }

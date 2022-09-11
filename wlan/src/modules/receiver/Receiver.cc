@@ -6,14 +6,14 @@ omnetpp::simsignal_t errorRateSId = omnetpp::cComponent::registerSignal("errorRa
 
 void Receiver::initialize () {
     // Extract simulation gates from NED file.
-    inGateId = findGate("fromChannel");
+    fromChannelGateId = findGate("fromChannel");
 }
 
 void Receiver::handleMessage(omnetpp::cMessage* msg) {
-    if (dynamic_cast<ResponsePacket*>(msg) && msg->arrivedOn(inGateId)) {
+    if (dynamic_cast<ResponsePacket*>(msg) && msg->arrivedOn(fromChannelGateId)) {
         ResponsePacket* pkt = (ResponsePacket*) msg;
 
-        EV << "Receiver::handleMessage: got valid message"
+        EV << HERE << "got valid message"
         << ", sequenceNumber = " << pkt->getSequenceNumber()
         << ", length = " << pkt->getOverheadBits() + pkt->getUserBits()
         << ", overheadBits = " << pkt->getOverheadBits()

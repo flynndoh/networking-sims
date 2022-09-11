@@ -34,6 +34,7 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc, .msg and .sm files
 OBJS = \
+    $O/MathHelpers.o \
     $O/modules/_channel/Channel.o \
     $O/modules/receiver/Receiver.o \
     $O/modules/transmitter/Transmitter.o \

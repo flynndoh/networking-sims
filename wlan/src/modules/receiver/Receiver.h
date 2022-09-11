@@ -2,14 +2,20 @@
 #define __WLAN_RECEIVER_H_
 
 #include <omnetpp.h>
+#include "../../Utils.h"
 #include "../../packets/ResponsePacket_m.h"
 
 class Receiver : public omnetpp::cSimpleModule {
-  public:
+  protected:
+    // Set up simulation state.
     void initialize();
+
+    // Generic message handling entry point.
     void handleMessage(omnetpp::cMessage* msg);
+
   private:
-    int inGateId;
+    // Channel gate id.
+    int fromChannelGateId;
 };
 
 #endif /* __WLAN_RECEIVER_H_ */
