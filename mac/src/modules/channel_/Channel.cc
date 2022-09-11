@@ -1,9 +1,4 @@
-#include "../channel_/Channel.h"
-
-#include "../../messages/signal/SignalStart_m.h"
-#include "../../messages/signal/SignalStop_m.h"
-
-#include "../../Utils.h"
+#include "Channel.h"
 
 Define_Module(Channel);
 

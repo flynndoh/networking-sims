@@ -1,6 +1,8 @@
 #ifndef HELPERS_H_
 #define HELPERS_H_
 
+#include <cmath>
+
 class Helpers {
   public:
     static double calculateEuclideanDistance(double positionX1, double positionY1, double positionX2, double positionY2);

@@ -1,9 +1,5 @@
 #include "PacketGenerator.h"
 
-#include "../../messages/application/AppMessage_m.h"
-#include "../../messages/application/AppResponse_m.h"
-#include "../../Utils.h"
-
 Define_Module(PacketGenerator);
 
 void PacketGenerator::initialize() {

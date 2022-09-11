@@ -1,8 +1,8 @@
-package wlan_simulation.simulations;
+package wlan.simulations;
 
-import wlan_simulation.modules.transmitter.Transmitter;
-import wlan_simulation.modules.receiver.Receiver;
-import wlan_simulation.modules._channel.Channel;
+import wlan.modules.transmitter.Transmitter;
+import wlan.modules.receiver.Receiver;
+import wlan.modules._channel.Channel;
 
 network wlan_sim
 {

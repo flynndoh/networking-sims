@@ -1,6 +1,4 @@
 #include "Transmitter.h"
-#include "../../messages/RequestPacketMessage_m.h"
-#include "../../packets/ResponsePacket_m.h"
 
 Define_Module(Transmitter);
 

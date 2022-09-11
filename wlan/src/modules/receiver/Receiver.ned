@@ -1,4 +1,4 @@
-package wlan_simulation.modules.receiver;
+package wlan.modules.receiver;
 
 simple Receiver {
     parameters:

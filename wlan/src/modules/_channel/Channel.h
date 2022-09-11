@@ -1,7 +1,8 @@
-#ifndef __WLAN_SIMULATION_CHANNEL_H_
-#define __WLAN_SIMULATION_CHANNEL_H_
+#ifndef __WLAN_CHANNEL_H_
+#define __WLAN_CHANNEL_H_
 
 #include <omnetpp.h>
+#include <cmath>
 #include "../../packets/ResponsePacket_m.h"
 #include "../../messages/PacketCompletionMessage_m.h"
 #include "../../messages/RequestPacketMessage_m.h"
@@ -32,4 +33,4 @@ class Channel : public cSimpleModule {
       ResponsePacket* currentPacket;
 };
 
-#endif /* __WLAN_SIMULATION_CHANNEL_H_ */
+#endif /* __WLAN_CHANNEL_H_ */

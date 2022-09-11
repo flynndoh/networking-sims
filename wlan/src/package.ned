@@ -1,3 +1,3 @@
-package wlan_simulation;
+package wlan;
 
 @license(LGPL);

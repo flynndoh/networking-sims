@@ -1,7 +1,8 @@
-#ifndef __WLAN_SIMULATION_RECEIVER_H_
-#define __WLAN_SIMULATION_RECEIVER_H_
+#ifndef __WLAN_RECEIVER_H_
+#define __WLAN_RECEIVER_H_
 
 #include <omnetpp.h>
+#include "../../packets/ResponsePacket_m.h"
 
 using namespace omnetpp;
 
@@ -13,4 +14,4 @@ class Receiver : public cSimpleModule {
     int inGateId;
 };
 
-#endif /* __WLAN_SIMULATION_RECEIVER_H_ */
+#endif /* __WLAN_RECEIVER_H_ */

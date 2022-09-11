@@ -1,8 +1,4 @@
 #include "Channel.h"
-#include <cmath>
-#include "../../packets/ResponsePacket_m.h"
-#include "../../messages/PacketCompletionMessage_m.h"
-#include "../../messages/RequestPacketMessage_m.h"
 
 Define_Module(Channel);
 

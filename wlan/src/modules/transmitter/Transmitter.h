@@ -1,8 +1,9 @@
-#ifndef __WLAN_SIMULATION_TRANSMITTER_H_
-#define __WLAN_SIMULATION_TRANSMITTER_H_
+#ifndef __WLAN_TRANSMITTER_H_
+#define __WLAN_TRANSMITTER_H_
 
 #include <omnetpp.h>
 #include "../../packets/ResponsePacket_m.h"
+#include "../../messages/RequestPacketMessage_m.h"
 
 using namespace omnetpp;
 

@@ -1,4 +1,4 @@
-package wlan_simulation.modules._channel;
+package wlan.modules._channel;
 
 simple Channel {
     parameters:

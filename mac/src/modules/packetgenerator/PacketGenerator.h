@@ -1,8 +1,10 @@
-#ifndef __COSC441MAC_PACKETGENERATOR_H_
-#define __COSC441MAC_PACKETGENERATOR_H_
+#ifndef __MAC_PACKETGENERATOR_H_
+#define __MAC_PACKETGENERATOR_H_
 
 #include <omnetpp.h>
+#include "../../Utils.h"
 #include "../../messages/application/AppResponse_m.h"
+#include "../../messages/application/AppMessage_m.h"
 
 using namespace omnetpp;
 

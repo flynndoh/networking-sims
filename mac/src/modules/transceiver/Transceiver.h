@@ -1,7 +1,9 @@
-#ifndef __COSC441MAC_TRANSCEIVER_H_
-#define __COSC441MAC_TRANSCEIVER_H_
+#ifndef __MAC_TRANSCEIVER_H_
+#define __MAC_TRANSCEIVER_H_
 
 #include <omnetpp.h>
+#include "../../Utils.h"
+#include "../../Helpers.h"
 #include "../../messages/signal/SignalStart_m.h"
 #include "../../messages/signal/SignalStop_m.h"
 #include "../../messages/carriersense/CSRequest_m.h"

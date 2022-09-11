@@ -1,4 +1,4 @@
-package wlan_simulation.modules.transmitter;
+package wlan.modules.transmitter;
 
 simple Transmitter {
 	parameters:

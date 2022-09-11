@@ -1,18 +1,5 @@
 #include "MediumAccessControl.h"
 
-#include "../../messages/application/AppMessage_m.h"
-#include "../../messages/application/AppResponse_m.h"
-#include "../../messages/mediumaccesscontrol/MacMessage_m.h"
-#include "../../messages/transmission/TransmissionConfirm_m.h"
-#include "../../messages/transmission/TransmissionConfirmStatus_m.h"
-#include "../../messages/transmission/TransmissionRequest_m.h"
-#include "../../messages/transmission/TransmissionIndication_m.h"
-#include "../../messages/carriersense/CSRequest_m.h"
-#include "../../messages/carriersense/CSResponse_m.h"
-
-#include "../../FifoBuffer.h"
-#include "../../Utils.h"
-
 Define_Module(MediumAccessControl);
 
 simsignal_t bufferDropped = cComponent::registerSignal("bufferDropped");

@@ -1,13 +1,18 @@
-#ifndef __COSC441MAC_MEDIUMACCESSCONTROL_H_
-#define __COSC441MAC_MEDIUMACCESSCONTROL_H_
+#ifndef __MAC_MEDIUMACCESSCONTROL_H_
+#define __MAC_MEDIUMACCESSCONTROL_H_
 
 #include <omnetpp.h>
-
+#include "../../FifoBuffer.h"
+#include "../../Utils.h"
+#include "../../messages/application/AppResponse_m.h"
 #include "../../messages/application/AppMessage_m.h"
-#include "../../messages/transmission/TransmissionConfirm_m.h"
-#include "../../messages/transmission/TransmissionIndication_m.h"
-#include "../../messages/mediumaccesscontrol/MacMessage_m.h"
 #include "../../messages/carriersense/CSResponse_m.h"
+#include "../../messages/carriersense/CSRequest_m.h"
+#include "../../messages/mediumaccesscontrol/MacMessage_m.h"
+#include "../../messages/transmission/TransmissionConfirm_m.h"
+#include "../../messages/transmission/TransmissionConfirmStatus_m.h"
+#include "../../messages/transmission/TransmissionRequest_m.h"
+#include "../../messages/transmission/TransmissionIndication_m.h"
 #include "../../FifoBuffer.h"
 
 using namespace omnetpp;

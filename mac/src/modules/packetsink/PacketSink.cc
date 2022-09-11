@@ -1,8 +1,5 @@
 #include "PacketSink.h"
 
-#include "../../messages/application/AppMessage_m.h"
-#include "../../Utils.h"
-
 Define_Module(PacketSink);
 
 simsignal_t delay = cComponent::registerSignal("delay");

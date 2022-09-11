@@ -49,10 +49,10 @@
 /out/
 
 # ignore the debug binary
-/src/COSC441MAC_dbg
+/src/mac_dbg.exe
 
 # ignore the release binary
-/src/COSC441MAC
+/src/mac.exe
 
 # ignore the generated MSG files
 *_m.h

@@ -3,6 +3,7 @@
 
 #include <omnetpp.h>
 #include "../../messages/application/AppMessage_m.h"
+#include "../../Utils.h"
 
 using namespace omnetpp;
 

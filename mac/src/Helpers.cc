@@ -1,5 +1,4 @@
 #include "Helpers.h"
-#include <cmath>
 
 double Helpers::calculateEuclideanDistance(double positionX1, double positionY1, double positionX2, double positionY2)
 {
