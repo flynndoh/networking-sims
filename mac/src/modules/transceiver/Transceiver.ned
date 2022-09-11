@@ -30,7 +30,7 @@ simple Transceiver
         // Specifies the time required to carry out a carrier sense operation.
 		double csTime @unit(s);
 		
-		// The nodeXPosition and nodeYPosition parameters describe the geographical position of the node in
+		// The nodeXPosition and nodeYPosition parameters describe the cartesian position of the node in
 		// two-dimensional space. Putting these parameters into the Transceiver is not really natural, but the
 		// Transceiver is the only module really using the node positions (for bit error rate calculations).
 		double nodeXPosition;

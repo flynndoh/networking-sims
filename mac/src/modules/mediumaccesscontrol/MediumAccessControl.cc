@@ -45,18 +45,11 @@ void MediumAccessControl::initialize() {
 
 void MediumAccessControl::finish() {
     // Clean up the buffer.
-    try {
-        while (1) {
-            AppMessage *appMessage = macBuffer->pop();
-            delete appMessage;
-        }
-    } catch (FifoBufferEmptyException *ex) {
-        // Ignore the error we get when we cannot take any more items from the buffer.
-        delete ex;
+    while (!macBuffer->isEmpty()) {
+        AppMessage *appMessage = macBuffer->pop();
+        delete appMessage;
     }
-
     delete macBuffer;
-    macBuffer = nullptr;
 
     // Clean up self-messages.
     cancelAndDelete(triggerMacBufferProcess);
@@ -73,7 +66,6 @@ void MediumAccessControl::finish() {
 
     if (macMessage != nullptr) {
         delete macMessage;
-        macMessage = nullptr;
     }
 }
 
@@ -173,13 +165,7 @@ void MediumAccessControl::handleCSResponseMessage(CSResponse *csResponse) {
 
 
 void MediumAccessControl::handleTransmissionConfirm(TransmissionConfirm *transmissionConfirm) {
-    if (transmissionConfirm->getStatus() == statusOk)
-        emit(lostInChannel, false);
-    else {
-        emit(lostInChannel, true);
-    }
-
-    // Cleanup.
+    emit(lostInChannel, transmissionConfirm->getStatus() != statusOk);
     delete transmissionConfirm;
 }
 
@@ -189,7 +175,8 @@ void MediumAccessControl::processMacBuffer(omnetpp::cMessage *msg) {
 
     switch (state) {
         case MAC_STATE_IDLE: {
-            if (!macBuffer->empty()) {
+            if (!macBuffer->isEmpty()) {
+                // Get the oldest AppMessage from buffer and encapsulate it into a MacMessage.
                 AppMessage *appMessage = macBuffer->pop();
                 assert(appMessage != nullptr);
 
@@ -202,11 +189,9 @@ void MediumAccessControl::processMacBuffer(omnetpp::cMessage *msg) {
                 macMessage->setTransmitterNodeId(appMessage->getSenderId());
                 macMessage->encapsulate(appMessage);
 
-                // Increment sequence number counter.
+                // Increment sequence number, reset attempt counter and attempt to transmit.
                 seqNoCounter++;
-
                 attemptCounter = 0;
-
                 state = MAC_STATE_RUNNING_ATTEMPTS;
                 processMacBuffer(nullptr);
             } else {
@@ -216,20 +201,18 @@ void MediumAccessControl::processMacBuffer(omnetpp::cMessage *msg) {
         }
         case MAC_STATE_RUNNING_ATTEMPTS: {
            if (attemptCounter < maxAttempts) {
+               // While we still have > 0 transmit attempts, repeatedly attempt to transmit MacMessage.
                attemptCounter++;
-
                backoffCounter = 0;
-
                state = MAC_STATE_RUNNING_BACKOFFS;
                processMacBuffer(nullptr);
            } else {
+               // Exhausted all transmit attempts, report failure to higher layer and cleanup MacMessage.
                appResponse = new AppResponse();
                appResponse->setSuccess(false);
                send(appResponse, toHigherLayerGateId);
 
                delete macMessage;
-               macMessage = nullptr;
-
                emit(lostInChannel, true);
 
                state = MAC_STATE_IDLE;
@@ -238,74 +221,74 @@ void MediumAccessControl::processMacBuffer(omnetpp::cMessage *msg) {
            break;
         }
         case MAC_STATE_RUNNING_BACKOFFS: {
-           if (backoffCounter < maxBackoffs) {
-               backoffCounter++;
-
-               state = MAC_STATE_AWAITING_CARRIER_SENSE;
-               send(new CSRequest(), toTransceiverGateId);
-               EV << HERE << "INFO: Sent a CSRequest!" << std::endl;
-           } else {
-               state = MAC_STATE_AWAITING_BACKOFF;
-               scheduleAt(now + getBackoffDistribution(), backoffTimerMessage);
-           }
-           break;
+            if (backoffCounter < maxBackoffs) {
+                // If we haven't been backed off, send a carrier sense request to the Transceiver
+                backoffCounter++;
+                state = MAC_STATE_AWAITING_CARRIER_SENSE;
+                send(new CSRequest(), toTransceiverGateId);
+                EV << HERE << "INFO: Sent a CSRequest!" << std::endl;
+            } else {
+                // Darn, we should wait some simulation time before attempting again.
+                state = MAC_STATE_AWAITING_BACKOFF;
+                scheduleAt(now + getBackoffDistribution(), backoffTimerMessage);
+            }
+            break;
         }
         case MAC_STATE_AWAITING_CARRIER_SENSE: {
             CSResponse *csRes = nullptr;
-           assert(dynamic_cast<CSResponse*>(msg) != nullptr);
-           csRes = (CSResponse*) msg;
+            assert(dynamic_cast<CSResponse*>(msg) != nullptr);
+            csRes = (CSResponse*) msg;
 
-           if (csRes->getBusyChannel() == false) {
-               assert(macMessage != nullptr);
+            if (csRes->getBusyChannel()) {
+                // Channel is busy, we should retry again after the retransmission backoff timer has elapsed.
+                state = MAC_STATE_AWAITING_RETRANSMISSION;
+                scheduleAt(now + getRetransmissionDistribution(), retransmissionTimerMessage);
+                EV << HERE << "INFO: Channel busy. Waiting retransmission backoff." << std::endl;
+            } else {
+                // Channel is free! Send a transmission request to the Transceiver.
 
-               TransmissionRequest *trRequest = new TransmissionRequest();
+                assert(macMessage != nullptr);
+                TransmissionRequest *trRequest = new TransmissionRequest();
 
-               // Make a copy of the MacMessage and encapsulate it in the transmission request.
-               trRequest->encapsulate(macMessage->dup());
+                // Make a copy of the MacMessage and encapsulate it in the transmission request.
+                trRequest->encapsulate(macMessage->dup());
 
-               EV << HERE << "Sending TransmissionRequest to Transceiver" << std::endl;
-               send(trRequest, toTransceiverGateId);
-               backoffCounter = 0;
-               state = MAC_STATE_AWAITING_ACK;
+                EV << HERE << "Sending TransmissionRequest to Transceiver" << std::endl;
+                send(trRequest, toTransceiverGateId);
 
-               scheduleAt(now + ackTimeout, ackTimerMessage);
-           } else {
-               state = MAC_STATE_AWAITING_RETRANSMISSION;
-               scheduleAt(now + getRetransmissionDistribution(),
-                       retransmissionTimerMessage);
-               EV << HERE << "INFO: Channel busy. Waiting retransmission backoff."
-                         << std::endl;
-           }
-           delete msg; // Tidy kiwi
-           break;
+                // Reset backoff counter, and await for ack.
+                backoffCounter = 0;
+                state = MAC_STATE_AWAITING_ACK;
+                scheduleAt(now + ackTimeout, ackTimerMessage);
+            }
+            delete msg; // Tidy kiwi.
+            break;
         }
         case MAC_STATE_AWAITING_ACK: {
             if (msg == ackTimerMessage) {
+                // Ack timeout, we should try and retransmit.
                 state = MAC_STATE_AWAITING_RETRANSMISSION;
-                scheduleAt(now + getRetransmissionDistribution(),
-                        retransmissionTimerMessage);
+                scheduleAt(now + getRetransmissionDistribution(), retransmissionTimerMessage);
             } else {
                 assert(dynamic_cast<MacMessage*>(msg) != nullptr);
                 MacMessage* macMessage = (MacMessage*) msg;
-
                 assert(macMessage->getType() == MAC_PACKET_TYPE_ACK);
 
                 if (isAcknowledgementOk(macMessage)) {
-                    cancelEvent(ackTimerMessage); // Don't delete as we need it later.
+                    // Message transmission has been confirmed successful, as indicated by ack from transceiver.
 
+                    cancelEvent(ackTimerMessage); // Cancel ack timer, but don't delete it as we need it when sending subsequent messages.
+
+                    // Send the good news to the higher layer and cleanup.
                     appResponse = new AppResponse();
                     appResponse->setSuccess(true);
                     send(appResponse, toHigherLayerGateId);
-
                     delete macMessage;
-                    macMessage = nullptr;
-
                     state = MAC_STATE_IDLE;
                     processMacBuffer(nullptr);
                 } else {
                     // Received someone else's ack message or the ACK message was stale.
-                    EV << HERE << "INFO: Dropped an ACK message that we don't care about."
-                              << std::endl;
+                    EV << HERE << "INFO: Dropped an ACK message that we don't care about." << std::endl;
                 }
                 delete msg; // Tidy kiwi.
             }
@@ -313,6 +296,7 @@ void MediumAccessControl::processMacBuffer(omnetpp::cMessage *msg) {
         }
         case MAC_STATE_AWAITING_BACKOFF: {
             if (msg == backoffTimerMessage) {
+                // Await backoff has completed, move to next state.
                 state = MAC_STATE_RUNNING_BACKOFFS;
                 processMacBuffer(nullptr);
             }
@@ -320,6 +304,7 @@ void MediumAccessControl::processMacBuffer(omnetpp::cMessage *msg) {
         }
         case MAC_STATE_AWAITING_RETRANSMISSION: {
             if (msg == retransmissionTimerMessage) {
+                // Await retransmission has completed, move to next state.
                 state = MAC_STATE_RUNNING_ATTEMPTS;
                 processMacBuffer(nullptr);
             }
@@ -334,10 +319,9 @@ void MediumAccessControl::processMacBuffer(omnetpp::cMessage *msg) {
 
 bool MediumAccessControl::isAcknowledgementOk(MacMessage *macMessage) {
     assert(macMessage != nullptr);
-    assert(macMessage != nullptr);
     return ((macMessage->getTransmitterNodeId() == macMessage->getReceiverNodeId())
-            && (macMessage->getReceiverNodeId() == macMessage->getTransmitterNodeId())
-            && (macMessage->getOriginalSeqNo() == macMessage->getSeqNo()));
+        && (macMessage->getReceiverNodeId() == macMessage->getTransmitterNodeId())
+        && (macMessage->getOriginalSeqNo() == macMessage->getSeqNo()));
 }
 
 void MediumAccessControl::handleMacMessage(MacMessage *macMessage) {
@@ -359,7 +343,7 @@ void MediumAccessControl::handleMacMessage(MacMessage *macMessage) {
             break;
         }
         case MAC_PACKET_TYPE_DATA: {
-            // Decapsulate and send to higher layer
+            // Decapsulate and send to higher layer.
             pkt = macMessage->decapsulate();
             assert(pkt != nullptr);
             assert(dynamic_cast<AppMessage*>(pkt) != nullptr);
@@ -368,7 +352,7 @@ void MediumAccessControl::handleMacMessage(MacMessage *macMessage) {
             send(appMessage, toHigherLayerGateId);
             EV << HERE << "INFO: Passed AppMessage to higher layer." << std::endl;
 
-            delete macMessage; // clean up memory
+            delete macMessage; // Cleanup.
             break;
         }
         default: {

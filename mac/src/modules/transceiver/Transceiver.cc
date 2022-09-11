@@ -123,7 +123,11 @@ void Transceiver::handleSignalStart(SignalStart *msg) {
     currentTransmissions.emplace(msg->getIdentifier(), msg);
 }
 
-SignalStart *Transceiver::getTransmittingSignalWithId(int signalId, bool andRemove) {
+SignalStart *Transceiver::getTransmittingSignalById(int signalId, bool andRemove) {
+    if (currentTransmissions.count(signalId) < 1) {
+        return nullptr;
+    }
+
     SignalStart *storedSignal = (SignalStart *) currentTransmissions[signalId];
     assert(storedSignal != nullptr);
 
@@ -150,7 +154,7 @@ void Transceiver::handleSignalStop(SignalStop *msg) {
     }
 
     EV << HERE << "INFO: handling an incoming SignalStop packet with id " << msg->getIdentifier() << std::endl;
-    SignalStart *storedSignalStart = getTransmittingSignalWithId(msg->getIdentifier(), true);
+    SignalStart *storedSignalStart = getTransmittingSignalById(msg->getIdentifier(), true);
 
     if (storedSignalStart == nullptr) {
         EV << HERE << "ERROR: Attempted to stop a signal that wasn't being transmitted from any Node." << std::endl;
@@ -168,7 +172,8 @@ void Transceiver::handleSignalStop(SignalStop *msg) {
         assert(storedMacMessage != nullptr);
 
         double distance = Helpers::calculateEuclideanDistance(storedSignalStart->getPositionX(),
-                                                              storedSignalStart->getPositionY(), transceiverPositionX,
+                                                              storedSignalStart->getPositionY(),
+                                                              transceiverPositionX,
                                                               transceiverPositionY);
         double bitErrorRate = calculateBitErrorRate(distance, storedSignalStart->getTransmitPowerDBm());
 
@@ -330,14 +335,13 @@ void Transceiver::processStartOfTransmission() {
     signalStart->encapsulate(currentTransmissionMacMessage);
     send(signalStart, toChannelGateId);
 
-    // Reset currentTransmissionMacMessage.
+    // Reset currentTransmissionMacMessage and schedule the sending of the endOfTransmissionMessage.
     currentTransmissionMacMessage = nullptr;
-
     scheduleAt(omnetpp::simTime() + (packetLengthBits / bitRate), endOfTransmissionMessage);
 }
 
 void Transceiver::processEndOfTransmission() {
-    // Create SignalStart packet and send to channel.
+    // Create SignalStop packet and send to channel.
     SignalStop *signalStop = new SignalStop();
     signalStop->setIdentifier(parentNodeId);
     send(signalStop, toChannelGateId);

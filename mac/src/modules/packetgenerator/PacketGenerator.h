@@ -8,58 +8,37 @@
 
 class PacketGenerator : public omnetpp::cSimpleModule {
   protected:
+    // Set up simulation state.
     void initialize();
+
+    // Tear down simulation state.
     void finish();
+
+    // Generic message handling entry point.
     void handleMessage(omnetpp::cMessage *msg);
 
   private:
-
-    /**
-     * The gate ids to and from the MAC layer.
-     */
+    // MAC Layer gate ids.
     int toMacGateId, fromMacGateId;
 
-    /**
-     * The id of the sender.
-     */
-    int senderId;
-
-    /**
-     * The id of the receiver.
-     */
-    int receiverId;
-
-    /**
-     * The sequence number.
-     */
+    int senderId, receiverId;
     long seqNo = 0;
-
     long numSent;
 
-    /**
-     * Used to trigger the sending of an AppMessage
-     */
+    // A self message that is used to trigger the sending of an AppMessage to the MAC layer.
     omnetpp::cMessage* readyMessage = nullptr;
 
-    /**
-     * Returns the parameter for the inter-arrival time distribution (in seconds).
-     */
+    // Returns the parameter for the inter-arrival time distribution (in seconds).
     double getIatDistribution(void);
 
-    /**
-     * Returns the parameter for the message size distribution (in bytes).
-     */
+    // Returns the parameter for the message size distribution (in bytes).
     double getMsgSizeDistribution(void);
 
-    /**
-     * The handler for AppResponse messages.
-     */
-    void handleAppResponse(AppResponse* appResponse);
-
-    /**
-     * Sends the AppMessage after an amount of time.
-     */
+    // Sends the AppMessage after a random amount of time.
     void sendAppMessage(void);
+
+    // The handler for AppResponse messages.
+    void handleAppResponse(AppResponse* appResponse);
 };
 
 #endif /* __MAC_PACKETGENERATOR_H_ */

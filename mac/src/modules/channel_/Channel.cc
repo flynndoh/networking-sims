@@ -3,6 +3,7 @@
 Define_Module(Channel);
 
 void Channel::initialize() {
+    // Extract simulation gates from NED file.
     fromReceiverGateId = findGate("fromReceiver");
     assert(fromReceiverGateId != -1);
 

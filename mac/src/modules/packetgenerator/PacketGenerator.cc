@@ -40,9 +40,7 @@ void PacketGenerator::handleMessage(omnetpp::cMessage *msg) {
     // Check if the message is telling us to send an AppMessage.
     if (msg->isSelfMessage()) {
         if (msg == readyMessage) {
-            EV << HERE
-                      << "INFO: received readyMessage, sending AppMessage to MAC layer."
-                      << std::endl;
+            EV << HERE << "INFO: received readyMessage, sending AppMessage to MAC layer." << std::endl;
             sendAppMessage();
             return;
         }

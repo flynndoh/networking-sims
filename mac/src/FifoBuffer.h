@@ -4,33 +4,35 @@
 #include <queue>
 #include "Utils.h"
 
+class FifoBufferInitialisationException : public std::exception {};
 class FifoBufferFullException : public std::exception {};
 class FifoBufferEmptyException : public std::exception {};
 
-template <typename T> class FifoBuffer
-        {
-public:
+template <typename T> class FifoBuffer {
+  public:
     FifoBuffer(int length);
     void push(T item);
     T pop(void);
-    bool empty(void);
+    bool isEmpty(void);
 
-private:
+  private:
     size_t length;
     std::deque<T> queue;
 };
 
+// Throws `FifoBufferInitialisationException` when length is not a positive integer.
 template <typename T> FifoBuffer<T>::FifoBuffer(int length)
 {
     if (length <= 0)
     {
-        throw "length must be a positive integer";
+        throw new FifoBufferInitialisationException;
     }
 
     this->length = length;
     this->queue = std::deque<T>();
 }
 
+// Throws `FifoBufferFullException` when attempting to push to an already full buffer.
 template <typename T> void FifoBuffer<T>::push(T item)
 {
     if (queue.size() < length)
@@ -43,6 +45,7 @@ template <typename T> void FifoBuffer<T>::push(T item)
     }
 }
 
+// Throws `FifoBufferEmptyException` when attempting to pop from an empty buffer.
 template <typename T> T FifoBuffer<T>::pop(void) {
     T result;
     if (queue.empty())
@@ -57,7 +60,7 @@ template <typename T> T FifoBuffer<T>::pop(void) {
     }
 }
 
-template <typename T> bool FifoBuffer<T>::empty(void) {
+template <typename T> bool FifoBuffer<T>::isEmpty(void) {
     return queue.empty();
 }
 

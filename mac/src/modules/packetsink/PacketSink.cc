@@ -35,19 +35,14 @@ void PacketSink::handleAppMessage(AppMessage *msg) {
 
     // Check to see if the senderId has been added to the map.
     if (transmitterLastSeqno.find(senderId) != transmitterLastSeqno.end()) {
-
         // Check that the received sequence number is strictly greater than the one we know about.
         if (currentSeqno > transmitterLastSeqno[senderId]) {
-
             // Update the valid sequence number.
             isSequenceNumberValid = true;
             transmitterLastSeqno[senderId] = msg->getSequenceNumber();
-
         } else {
-
             // We may have received a copy of a message we've already received.
             isSequenceNumberValid = false;
-
         }
     } else {
         // Map the senderId to the valid sequence number.
@@ -56,9 +51,7 @@ void PacketSink::handleAppMessage(AppMessage *msg) {
     }
 
     if (isSequenceNumberValid) {
-
         numReceived++;
-
         EV << HERE << "received valid message" << ", timeStamp = "
                   << msg->getTimeStamp() << ", senderId = "
                   << msg->getSenderId() << ", sequenceNumber = "
@@ -70,7 +63,6 @@ void PacketSink::handleAppMessage(AppMessage *msg) {
 
         // Transmitter has already been registered, calculate and emit statistic for gap.
         emit(gap, currentSeqno - transmitterLastSeqno.find(senderId)->second);
-
     } else {
         EV << HERE << "received the same message again!" << std::endl;
     }
