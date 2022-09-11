@@ -52,7 +52,7 @@ void PacketGenerator::handleMessage(omnetpp::cMessage *msg) {
         return;
     }
 
-    // Check that the message is an AppReport.
+    // Check that the message is an AppResponse.
     tryHandleMessage(msg, AppResponse*, fromMacGateId, handleAppResponse);
 
     EV << HERE << "ERROR: msg is not an AppResponse." << std::endl;
@@ -61,7 +61,7 @@ void PacketGenerator::handleMessage(omnetpp::cMessage *msg) {
 }
 
 void PacketGenerator::handleAppResponse(AppResponse *appResponse) {
-    // The PacketGenerator just drops any AppReports it receives from the MAC layer.
+    // The PacketGenerator just drops any AppResponses it receives from the MAC layer.
     EV << HERE << "INFO: dropped AppResponse message." << std::endl;
     delete appResponse;
 }

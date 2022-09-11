@@ -255,7 +255,7 @@ void Transceiver::handleCSRequest(CSRequest *msg) {
     } else if (transceiverState == TXRX_STATE_TRANSMIT || transceiverState == TXRX_STATE_TURNING_AROUND) {
         EV << HERE << "WARNING: Received CSRequest when transceiver is in transmit or turning around state!" << std::endl;
 
-        // Handle the edge case when the transceiver receives a carrier sense request, and it is busy.
+        // Handle the case when the transceiver receives a carrier sense request, and it is busy.
         CSResponse *csResponse = new CSResponse();
         csResponse->setBusyChannel(true);
         send(csResponse, toMACGateId);

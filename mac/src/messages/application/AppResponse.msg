@@ -1,6 +1,6 @@
 packet AppResponse {
     
-    // The corresponding AppMessage's sequenceNumber that the AppReport refers to.
+    // The corresponding AppMessage's sequenceNumber that the AppResponse refers to.
     int sequenceNumber;
     
    	// The outcome for that AppMessage which is either success (if the 
