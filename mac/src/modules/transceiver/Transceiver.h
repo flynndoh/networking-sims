@@ -19,7 +19,7 @@ enum TransceiverState {
     TXRX_STATE_TURNING_AROUND = 2
 };
 
-class Transceiver : public omnetpp::cSimpleModule {
+class Transceiver final : public omnetpp::cSimpleModule {
   protected:
     // Set up simulation state.
     void initialize();

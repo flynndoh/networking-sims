@@ -6,7 +6,7 @@
 #include "../../messages/application/AppResponse_m.h"
 #include "../../messages/application/AppMessage_m.h"
 
-class PacketGenerator : public omnetpp::cSimpleModule {
+class PacketGenerator final : public omnetpp::cSimpleModule {
   protected:
     // Set up simulation state.
     void initialize();

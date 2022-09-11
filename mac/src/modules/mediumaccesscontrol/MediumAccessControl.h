@@ -26,7 +26,7 @@ enum MediumAccessControlState
     MAC_STATE_AWAITING_CARRIER_SENSE = 6,
 };
 
-class MediumAccessControl : public omnetpp::cSimpleModule {
+class MediumAccessControl final : public omnetpp::cSimpleModule {
   protected:
     // Set up simulation state.
     void initialize();

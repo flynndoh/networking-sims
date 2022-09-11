@@ -3,7 +3,7 @@
 
 #include <cmath>
 
-class MathHelpers {
+class MathHelpers final {
   public:
     static double calculateEuclideanDistance(double positionX1, double positionY1, double positionX2, double positionY2);
     static double calculatePathLoss(double distanceMeters, double pathLossExp);

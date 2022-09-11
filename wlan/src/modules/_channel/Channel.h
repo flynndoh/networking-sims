@@ -9,7 +9,7 @@
 #include "../../messages/PacketCompletionMessage_m.h"
 #include "../../messages/RequestPacketMessage_m.h"
 
-class Channel : public omnetpp::cSimpleModule {
+class Channel final : public omnetpp::cSimpleModule {
   protected:
     // Set up simulation state.
     void initialize();

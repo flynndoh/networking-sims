@@ -7,7 +7,7 @@
 #include "../../messages/signal/SignalStart_m.h"
 #include "../../messages/signal/SignalStop_m.h"
 
-class Channel : public omnetpp::cSimpleModule {
+class Channel final : public omnetpp::cSimpleModule {
   protected:
     // Set up simulation state.
     void initialize();

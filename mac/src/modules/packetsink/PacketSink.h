@@ -5,7 +5,7 @@
 #include "../../Utils.h"
 #include "../../messages/application/AppMessage_m.h"
 
-class PacketSink : public omnetpp::cSimpleModule {
+class PacketSink final : public omnetpp::cSimpleModule {
   protected:
     // Set up simulation state.
     void initialize();

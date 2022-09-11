@@ -5,7 +5,7 @@
 #include "../../Utils.h"
 #include "../../packets/ResponsePacket_m.h"
 
-class Receiver : public omnetpp::cSimpleModule {
+class Receiver final : public omnetpp::cSimpleModule {
   protected:
     // Set up simulation state.
     void initialize();
