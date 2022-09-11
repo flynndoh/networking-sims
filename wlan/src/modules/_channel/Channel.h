@@ -7,12 +7,10 @@
 #include "../../messages/PacketCompletionMessage_m.h"
 #include "../../messages/RequestPacketMessage_m.h"
 
-using namespace omnetpp;
-
-class Channel : public cSimpleModule {
+class Channel : public omnetpp::cSimpleModule {
     public:
       void initialize ();
-      void handleMessage(cMessage* msg);
+      void handleMessage(omnetpp::cMessage* msg);
       void handleCompletion();
       void handleIncomingPacket(ResponsePacket* pkt);
       double calculateBitErrorRate();
@@ -27,7 +25,7 @@ class Channel : public cSimpleModule {
       double bitRate, pathLossExponent, nodeDistance, txPowerDBm, noisePowerDBm;
       double channelGainGoodDB, channelGainBadDB, txProbabilityGoodGood, txProbabilityBadBad;
       int fromTransmitterGateId, toTransmitterGateId, toReceiverGateId;
-      cMessage* requestNewPacket;
+      omnetpp::cMessage* requestNewPacket;
       RequestPacketMessage* newPacketRequest;
       PacketCompletionMessage* completion;
       ResponsePacket* currentPacket;

@@ -13,19 +13,17 @@
 #include "../../messages/transmission/TransmissionConfirm_m.h"
 #include "../../messages/transmission/TransmissionIndication_m.h"
 
-using namespace omnetpp;
-
 enum TransceiverState {
     TXRX_STATE_RECEIVE  = 0,
     TXRX_STATE_TRANSMIT = 1,
     TXRX_STATE_TURNING_AROUND = 2
 };
 
-class Transceiver : public cSimpleModule {
+class Transceiver : public omnetpp::cSimpleModule {
   protected:
     void initialize();
     void finish();
-    void handleMessage(cMessage *msg);
+    void handleMessage(omnetpp::cMessage *msg);
     void handleSignalStart(SignalStart *msg);
     void handleSignalStop(SignalStop *msg);
     void handleCSRequest(CSRequest *msg);
@@ -39,7 +37,7 @@ class Transceiver : public cSimpleModule {
     SignalStart* getTransmittingSignalWithId(int signalId, bool andRemove=false);
     double calculateBitErrorRate(double distance, double signalTxPowerDBm);
     double calculateCurrentSignalPower();
-    void handleSelfMessage(cMessage *msg);
+    void handleSelfMessage(omnetpp::cMessage *msg);
 
   private:
     int parentNodeId, fromMACGateId, toMACGateId, fromChannelGateId, toChannelGateId;
@@ -48,12 +46,12 @@ class Transceiver : public cSimpleModule {
     double pathLossExponent, noisePowerDBm, txPowerDBm, bitRate;
     double currentSignalPower, csThreshDBm, csTime, turnAroundTime;
     std::map<int, SignalStart*> currentTransmissions;
-    cMessage* csTimeMessage = nullptr;
-    cMessage* turnAroundToTransmitCompleted = nullptr;
-    cMessage* turnAroundToReceiveCompleted = nullptr;
-    cMessage* endOfTransmissionMessage = nullptr;
+    omnetpp::cMessage* csTimeMessage = nullptr;
+    omnetpp::cMessage* turnAroundToTransmitCompleted = nullptr;
+    omnetpp::cMessage* turnAroundToReceiveCompleted = nullptr;
+    omnetpp::cMessage* endOfTransmissionMessage = nullptr;
     MacMessage* currentTransmissionMacMessage = nullptr;
     TransceiverState transceiverState;
 };
 
-#endif
+#endif /* __MAC_TRANSCEIVER_H_ */

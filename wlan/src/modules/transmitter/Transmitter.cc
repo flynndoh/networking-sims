@@ -12,12 +12,12 @@ void Transmitter::initialize() {
     fromChannelGateId = findGate("fromChannel");
 }
 
-void Transmitter::handleMessage(cMessage* msg) {
+void Transmitter::handleMessage(omnetpp::cMessage* msg) {
     if ((dynamic_cast<RequestPacketMessage*>(msg)) && (msg->arrivedOn(fromChannelGateId))) {
         EV << "Transmitter::handleMessage: generating a new packet at time "
-           << simTime() << " with sequence number " << sequenceNumber
+           << omnetpp::simTime() << " with sequence number " << sequenceNumber
            << " and with packet size " << (overheadBits + userBits)
-           << " bits" << endl;
+           << " bits" << std::endl;
 
         delete msg;
 

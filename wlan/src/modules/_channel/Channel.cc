@@ -32,12 +32,12 @@ void Channel::initialize () {
     send(new RequestPacketMessage(), toTransmitterGateId);
 }
 
-void Channel::handleMessage(cMessage* msg) {
+void Channel::handleMessage(omnetpp::cMessage* msg) {
     if (msg == completion) {
-        EV << "Channel::handleMessage: handling completion event" << endl;
+        EV << "Channel::handleMessage: handling completion event" << std::endl;
         handleCompletion();
     } else if ((dynamic_cast<ResponsePacket*>(msg)) && (msg->arrivedOn(fromTransmitterGateId))) {
-        EV << "Channel::handleMessage: handling an incoming packet" << endl;
+        EV << "Channel::handleMessage: handling an incoming packet" << std::endl;
         handleIncomingPacket((ResponsePacket*) msg);
     } else {
         error("Channel::handleMessage: received unforeseen message!");
@@ -47,7 +47,7 @@ void Channel::handleMessage(cMessage* msg) {
 void Channel::handleIncomingPacket(ResponsePacket* pkt) {
     // Is the channel currently busy with another packet?
     if (currentPacket != nullptr) {
-        EV << "Channel::handleIncomingPacket: got packet while channel is busy, dropping it" << endl;
+        EV << "Channel::handleIncomingPacket: got packet while channel is busy, dropping it" << std::endl;
         delete pkt;
         return;
     }
@@ -90,7 +90,7 @@ void Channel::handleIncomingPacket(ResponsePacket* pkt) {
         }
     }
 
-    scheduleAt(simTime()+(packetLengthBits / bitRate), completion);
+    scheduleAt(omnetpp::simTime()+(packetLengthBits / bitRate), completion);
 }
 
 double Channel::calculateBitErrorRate() {
@@ -108,8 +108,8 @@ double Channel::calculateBitErrorRate() {
            << ", receivedPowerDBm = " << receivedPowerDBm
            << ", SNRRelation = " << SNRRelation
            << ", bitErrorRate = " << bitErrorRate
-           << ", currSimTime = " << simTime()
-           << endl;
+           << ", currSimTime = " << omnetpp::simTime()
+           << std::endl;
 
     return bitErrorRate;
 }
@@ -144,13 +144,13 @@ void Channel::handleCompletion() {
     }
 
     // Send current packet to receiver.
-    EV << "Channel::handleCompletion: Sending packet to receiver" << endl;
+    EV << "Channel::handleCompletion: Sending packet to receiver" << std::endl;
     send(currentPacket, toReceiverGateId);
 
     currentPacket = nullptr;
 
     // Ask transmitter for a new packet.
-    EV << "Channel::handleCompletion: Asking transmitter for new packet" << endl;
+    EV << "Channel::handleCompletion: Asking transmitter for new packet" << std::endl;
     send(new RequestPacketMessage(), toTransmitterGateId);
 }
 

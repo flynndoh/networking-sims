@@ -15,8 +15,6 @@
 #include "../../messages/transmission/TransmissionIndication_m.h"
 #include "../../FifoBuffer.h"
 
-using namespace omnetpp;
-
 enum MediumAccessControlState
 {
     /**
@@ -56,11 +54,11 @@ enum MediumAccessControlState
 
 };
 
-class MediumAccessControl : public cSimpleModule {
+class MediumAccessControl : public omnetpp::cSimpleModule {
   protected:
    void initialize();
    void finish();
-   void handleMessage(cMessage *msg);
+   void handleMessage(omnetpp::cMessage *msg);
 
   private:
     /**
@@ -108,10 +106,10 @@ class MediumAccessControl : public cSimpleModule {
      */
     int backoffCounter;
 
-    cMessage* triggerMacBufferProcess = nullptr;
-    cMessage* backoffTimerMessage = nullptr;
-    cMessage* retransmissionTimerMessage = nullptr;
-    cMessage* ackTimerMessage = nullptr;
+    omnetpp::cMessage* triggerMacBufferProcess = nullptr;
+    omnetpp::cMessage* backoffTimerMessage = nullptr;
+    omnetpp::cMessage* retransmissionTimerMessage = nullptr;
+    omnetpp::cMessage* ackTimerMessage = nullptr;
 
     FifoBuffer<AppMessage*> * macBuffer = nullptr;
 
@@ -135,7 +133,7 @@ class MediumAccessControl : public cSimpleModule {
      */
     double getRetransmissionDistribution(void);
 
-    void handleSelfMessage(cMessage *msg);
+    void handleSelfMessage(omnetpp::cMessage *msg);
 
     void handleAppMessage(AppMessage* appMessage);
 
@@ -147,9 +145,9 @@ class MediumAccessControl : public cSimpleModule {
 
     void handleTransmissionIndication(TransmissionIndication* transmissionIndication);
 
-    void processMacBuffer(cMessage * msg);
+    void processMacBuffer(omnetpp::cMessage * msg);
 
     bool isAcknowledgementOk(MacMessage * macMessage);
 };
 
-#endif
+#endif /* __MAC_MEDIUMACCESSCONTROL_H_ */

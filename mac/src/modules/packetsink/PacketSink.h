@@ -1,17 +1,15 @@
-#ifndef __mac_PACKETSINK_H_
-#define __mac_PACKETSINK_H_
+#ifndef __MAC_PACKETSINK_H_
+#define __MAC_PACKETSINK_H_
 
 #include <omnetpp.h>
-#include "../../messages/application/AppMessage_m.h"
 #include "../../Utils.h"
+#include "../../messages/application/AppMessage_m.h"
 
-using namespace omnetpp;
-
-class PacketSink : public cSimpleModule {
+class PacketSink : public omnetpp::cSimpleModule {
   protected:
     void initialize();
     void finish();
-    void handleMessage(cMessage *msg);
+    void handleMessage(omnetpp::cMessage *msg);
     void handleAppMessage(AppMessage *msg);
 
   private:
@@ -22,4 +20,4 @@ class PacketSink : public cSimpleModule {
     std::map<int, int> transmitterLastSeqno;
 };
 
-#endif /* __mac_PACKETSINK_H_ */
+#endif /* __MAC_PACKETSINK_H_ */

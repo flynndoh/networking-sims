@@ -16,11 +16,11 @@ void PacketGenerator::initialize() {
     numSent = 0;
 
     // Used to trigger the sending of an AppMessage.
-    readyMessage = new cMessage("ready");
+    readyMessage = new omnetpp::cMessage("ready");
     assert(readyMessage != nullptr);
 
     // Send a self-message to trigger the start of the packet generation.
-    scheduleAt(simTime(), readyMessage);
+    scheduleAt(omnetpp::simTime(), readyMessage);
 }
 
 void PacketGenerator::finish()
@@ -36,18 +36,18 @@ double PacketGenerator::getMsgSizeDistribution(void) {
     return par("msgSizeDistribution");
 }
 
-void PacketGenerator::handleMessage(cMessage *msg) {
+void PacketGenerator::handleMessage(omnetpp::cMessage *msg) {
     // Check if the message is telling us to send an AppMessage.
     if (msg->isSelfMessage()) {
         if (msg == readyMessage) {
             EV << HERE
                       << "INFO: received readyMessage, sending AppMessage to MAC layer."
-                      << endl;
+                      << std::endl;
             sendAppMessage();
             return;
         }
 
-        EV << HERE << "CRITICAL: Received an unexpected self-message" << endl;
+        EV << HERE << "CRITICAL: Received an unexpected self-message" << std::endl;
         error("Received an unexpected self-message");
         delete msg;
         return;
@@ -56,19 +56,19 @@ void PacketGenerator::handleMessage(cMessage *msg) {
     // Check that the message is an AppReport.
     tryHandleMessage(msg, AppResponse*, fromMacGateId, handleAppResponse);
 
-    EV << HERE << "ERROR: msg is not an AppResponse." << endl;
+    EV << HERE << "ERROR: msg is not an AppResponse." << std::endl;
     error("Should not get here");
     delete msg; // Prevent memory leaks.
 }
 
 void PacketGenerator::handleAppResponse(AppResponse *appResponse) {
     // The PacketGenerator just drops any AppReports it receives from the MAC layer.
-    EV << HERE << "INFO: dropped AppResponse message." << endl;
+    EV << HERE << "INFO: dropped AppResponse message." << std::endl;
     delete appResponse;
 }
 
 void PacketGenerator::sendAppMessage() {
-    simtime_t now = simTime();
+    omnetpp::simtime_t now = omnetpp::simTime();
 
     // Create an AppMessage.
     AppMessage *appMessage = new AppMessage();

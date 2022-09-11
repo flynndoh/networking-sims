@@ -6,13 +6,11 @@
 #include "../../messages/application/AppResponse_m.h"
 #include "../../messages/application/AppMessage_m.h"
 
-using namespace omnetpp;
-
-class PacketGenerator : public cSimpleModule {
+class PacketGenerator : public omnetpp::cSimpleModule {
   protected:
     void initialize();
     void finish();
-    void handleMessage(cMessage *msg);
+    void handleMessage(omnetpp::cMessage *msg);
 
   private:
 
@@ -41,7 +39,7 @@ class PacketGenerator : public cSimpleModule {
     /**
      * Used to trigger the sending of an AppMessage
      */
-    cMessage* readyMessage = nullptr;
+    omnetpp::cMessage* readyMessage = nullptr;
 
     /**
      * Returns the parameter for the inter-arrival time distribution (in seconds).
@@ -64,4 +62,4 @@ class PacketGenerator : public cSimpleModule {
     void sendAppMessage(void);
 };
 
-#endif
+#endif /* __MAC_PACKETGENERATOR_H_ */

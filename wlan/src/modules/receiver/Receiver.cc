@@ -2,14 +2,14 @@
 
 Define_Module(Receiver);
 
-simsignal_t errorRateSId = cComponent::registerSignal("errorRate");
+omnetpp::simsignal_t errorRateSId = omnetpp::cComponent::registerSignal("errorRate");
 
 void Receiver::initialize () {
     // Extract simulation gates from NED file.
     inGateId = findGate("fromChannel");
 }
 
-void Receiver::handleMessage(cMessage* msg) {
+void Receiver::handleMessage(omnetpp::cMessage* msg) {
     if (dynamic_cast<ResponsePacket*>(msg) && msg->arrivedOn(inGateId)) {
         ResponsePacket* pkt = (ResponsePacket*) msg;
 
@@ -19,8 +19,8 @@ void Receiver::handleMessage(cMessage* msg) {
         << ", overheadBits = " << pkt->getOverheadBits()
         << ", userBits = " << pkt->getUserBits()
         << ", errorFlag = " << pkt->getErrorFlag()
-        << ", currSimTime = " << simTime()
-        << endl;
+        << ", currSimTime = " << omnetpp::simTime()
+        << std::endl;
 
         emit(errorRateSId, pkt->getErrorFlag());
         delete msg;

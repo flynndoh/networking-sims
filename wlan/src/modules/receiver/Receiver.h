@@ -4,12 +4,10 @@
 #include <omnetpp.h>
 #include "../../packets/ResponsePacket_m.h"
 
-using namespace omnetpp;
-
-class Receiver : public cSimpleModule {
+class Receiver : public omnetpp::cSimpleModule {
   public:
     void initialize();
-    void handleMessage(cMessage* msg);
+    void handleMessage(omnetpp::cMessage* msg);
   private:
     int inGateId;
 };

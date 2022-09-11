@@ -2,8 +2,8 @@
 
 Define_Module(MediumAccessControl);
 
-simsignal_t bufferDropped = cComponent::registerSignal("bufferDropped");
-simsignal_t lostInChannel = cComponent::registerSignal("lostInChannel");
+omnetpp::simsignal_t bufferDropped = omnetpp::cComponent::registerSignal("bufferDropped");
+omnetpp::simsignal_t lostInChannel = omnetpp::cComponent::registerSignal("lostInChannel");
 
 void MediumAccessControl::initialize() {
     // Extract simulation parameters from NED file.
@@ -27,16 +27,16 @@ void MediumAccessControl::initialize() {
     assert(macBuffer != nullptr);
 
     // Set up self-messages.
-    triggerMacBufferProcess = new cMessage("triggerMacBufferProcess");
+    triggerMacBufferProcess = new omnetpp::cMessage("triggerMacBufferProcess");
     assert(triggerMacBufferProcess != nullptr);
 
-    ackTimerMessage = new cMessage("ackTimerMessage");
+    ackTimerMessage = new omnetpp::cMessage("ackTimerMessage");
     assert(ackTimerMessage != nullptr);
 
-    backoffTimerMessage = new cMessage("backoffTimerMessage");
+    backoffTimerMessage = new omnetpp::cMessage("backoffTimerMessage");
     assert(backoffTimerMessage != nullptr);
 
-    retransmissionTimerMessage = new cMessage("retransmissionTimerMessage");
+    retransmissionTimerMessage = new omnetpp::cMessage("retransmissionTimerMessage");
     assert(retransmissionTimerMessage != nullptr);
 
     state = MAC_STATE_IDLE;
@@ -85,37 +85,37 @@ double MediumAccessControl::getRetransmissionDistribution(void) {
     return par("retransmissionDistribution");
 }
 
-void MediumAccessControl::handleSelfMessage(cMessage *msg) {
+void MediumAccessControl::handleSelfMessage(omnetpp::cMessage *msg) {
     if (msg == triggerMacBufferProcess) {
-        EV << HERE << "INFO: received self-message triggerMacBufferProcess." << endl;
+        EV << HERE << "INFO: received self-message triggerMacBufferProcess." << std::endl;
         processMacBuffer(msg);
         return;
     }
 
     if (msg == ackTimerMessage) {
-        EV << HERE << "INFO: received self-message ackTimerMessage." << endl;
+        EV << HERE << "INFO: received self-message ackTimerMessage." << std::endl;
         processMacBuffer(msg);
         return;
     }
 
     if (msg == retransmissionTimerMessage) {
-        EV << HERE << "INFO: received self-message retransmissionTimerMessage." << endl;
+        EV << HERE << "INFO: received self-message retransmissionTimerMessage." << std::endl;
         processMacBuffer(msg);
         return;
     }
 
     if (msg == backoffTimerMessage) {
-        EV << HERE << "INFO: received self-message backoffTimerMessage." << endl;
+        EV << HERE << "INFO: received self-message backoffTimerMessage." << std::endl;
         processMacBuffer(msg);
         return;
     }
 
-    EV << HERE << "ERROR: self-message is of unexpected type." << endl;
+    EV << HERE << "ERROR: self-message is of unexpected type." << std::endl;
     error("Shouldn't get here");
     delete msg; // Prevent memory leaks.
 }
 
-void MediumAccessControl::handleMessage(cMessage *msg) {
+void MediumAccessControl::handleMessage(omnetpp::cMessage *msg) {
     if (msg->isSelfMessage()) {
         return handleSelfMessage(msg);
     }
@@ -127,7 +127,7 @@ void MediumAccessControl::handleMessage(cMessage *msg) {
     tryHandleMessage(msg, TransmissionIndication*, fromTransceiverGateId,handleTransmissionIndication)
 
     // If we get here we have received a message that we didn't expect :(
-    EV << HERE << "ERROR: msg is an unexpected type." << endl;
+    EV << HERE << "ERROR: msg is an unexpected type." << std::endl;
     error("Shouldn't get here");
     delete msg;
 }
@@ -139,21 +139,21 @@ void MediumAccessControl::handleAppMessage(AppMessage *appMessage) {
         // Attempt to insert the AppMessage into the FIFO buffer.
         macBuffer->push(appMessage);
 
-        EV << HERE << "INFO: pushed AppMessage to macBuffer." << endl;
+        EV << HERE << "INFO: pushed AppMessage to macBuffer." << std::endl;
 
         // Emit statistic for packets not dropped at the buffer.
         emit(bufferDropped, false);
 
         // Process the buffer now.
         if (state == MAC_STATE_IDLE) { // only process the mac buffer if we aren't in the middle of doing it already
-            scheduleAt(simTime(), triggerMacBufferProcess);
+            scheduleAt(omnetpp::simTime(), triggerMacBufferProcess);
         }
     } catch (FifoBufferFullException *ex) {
         // If the buffer is full, drop the message and send an AppResponse message to the higher layer.
         delete appMessage;
         delete ex;
 
-        EV << HERE << "INFO: could not push AppMessage to macBuffer. Buffer full." << endl;
+        EV << HERE << "INFO: could not push AppMessage to macBuffer. Buffer full." << std::endl;
 
         // Emit statistic for packets dropped at the buffer.
         emit(bufferDropped, true);
@@ -183,8 +183,8 @@ void MediumAccessControl::handleTransmissionConfirm(TransmissionConfirm *transmi
     delete transmissionConfirm;
 }
 
-void MediumAccessControl::processMacBuffer(cMessage *msg) {
-    simtime_t now = simTime();
+void MediumAccessControl::processMacBuffer(omnetpp::cMessage *msg) {
+    omnetpp::simtime_t now = omnetpp::simTime();
     AppResponse *appResponse = nullptr;
 
     switch (state) {
@@ -210,7 +210,7 @@ void MediumAccessControl::processMacBuffer(cMessage *msg) {
                 state = MAC_STATE_RUNNING_ATTEMPTS;
                 processMacBuffer(nullptr);
             } else {
-                EV << HERE << "No more packets to process!" << endl;
+                EV << HERE << "No more packets to process!" << std::endl;
             }
             break;
         }
@@ -243,7 +243,7 @@ void MediumAccessControl::processMacBuffer(cMessage *msg) {
 
                state = MAC_STATE_AWAITING_CARRIER_SENSE;
                send(new CSRequest(), toTransceiverGateId);
-               EV << HERE << "INFO: Sent a CSRequest!" << endl;
+               EV << HERE << "INFO: Sent a CSRequest!" << std::endl;
            } else {
                state = MAC_STATE_AWAITING_BACKOFF;
                scheduleAt(now + getBackoffDistribution(), backoffTimerMessage);
@@ -263,7 +263,7 @@ void MediumAccessControl::processMacBuffer(cMessage *msg) {
                // Make a copy of the MacMessage and encapsulate it in the transmission request.
                trRequest->encapsulate(macMessage->dup());
 
-               EV << HERE << "Sending TransmissionRequest to Transceiver" << endl;
+               EV << HERE << "Sending TransmissionRequest to Transceiver" << std::endl;
                send(trRequest, toTransceiverGateId);
                backoffCounter = 0;
                state = MAC_STATE_AWAITING_ACK;
@@ -274,7 +274,7 @@ void MediumAccessControl::processMacBuffer(cMessage *msg) {
                scheduleAt(now + getRetransmissionDistribution(),
                        retransmissionTimerMessage);
                EV << HERE << "INFO: Channel busy. Waiting retransmission backoff."
-                         << endl;
+                         << std::endl;
            }
            delete msg; // Tidy kiwi
            break;
@@ -305,7 +305,7 @@ void MediumAccessControl::processMacBuffer(cMessage *msg) {
                 } else {
                     // Received someone else's ack message or the ACK message was stale.
                     EV << HERE << "INFO: Dropped an ACK message that we don't care about."
-                              << endl;
+                              << std::endl;
                 }
                 delete msg; // Tidy kiwi.
             }
@@ -341,19 +341,19 @@ bool MediumAccessControl::isAcknowledgementOk(MacMessage *macMessage) {
 }
 
 void MediumAccessControl::handleMacMessage(MacMessage *macMessage) {
-    cPacket *pkt = nullptr;
+    omnetpp::cPacket *pkt = nullptr;
     AppMessage *appMessage = nullptr;
 
     switch (macMessage->getType()) {
         case MAC_PACKET_TYPE_ACK: {
             if (state == MAC_STATE_AWAITING_ACK)
             {
-                EV << HERE << "Got an ACK packet!" << endl;
+                EV << HERE << "Got an ACK packet!" << std::endl;
                 processMacBuffer(macMessage);
             }
             else
             {
-                EV << HERE << "Warning: Dropping an ACK packet because the MAC isn't in the right state!" << endl;
+                EV << HERE << "Warning: Dropping an ACK packet because the MAC isn't in the right state!" << std::endl;
                 delete macMessage;
             }
             break;
@@ -366,7 +366,7 @@ void MediumAccessControl::handleMacMessage(MacMessage *macMessage) {
 
             appMessage = (AppMessage*) pkt;
             send(appMessage, toHigherLayerGateId);
-            EV << HERE << "INFO: Passed AppMessage to higher layer." << endl;
+            EV << HERE << "INFO: Passed AppMessage to higher layer." << std::endl;
 
             delete macMessage; // clean up memory
             break;
@@ -380,7 +380,7 @@ void MediumAccessControl::handleMacMessage(MacMessage *macMessage) {
 
 void MediumAccessControl::handleTransmissionIndication(
     TransmissionIndication *transmissionIndication) {
-    cPacket *pkt = nullptr;
+    omnetpp::cPacket *pkt = nullptr;
 
     pkt = transmissionIndication->decapsulate();
     assert(pkt != nullptr);
@@ -388,7 +388,7 @@ void MediumAccessControl::handleTransmissionIndication(
     assert(dynamic_cast<MacMessage*>(pkt) != nullptr);
     MacMessage *macMessage = (MacMessage*) pkt;
 
-    EV << HERE << "Decapsulating TransmissionIndication to MacMessage" << endl;
+    EV << HERE << "Decapsulating TransmissionIndication to MacMessage" << std::endl;
 
     delete transmissionIndication;
     handleMacMessage(macMessage);

@@ -5,12 +5,10 @@
 #include "../../packets/ResponsePacket_m.h"
 #include "../../messages/RequestPacketMessage_m.h"
 
-using namespace omnetpp;
-
-class Transmitter : public cSimpleModule {
+class Transmitter : public omnetpp::cSimpleModule {
   public:
     void initialize();
-    void handleMessage(cMessage* msg);
+    void handleMessage(omnetpp::cMessage* msg);
 
     ResponsePacket* createResponsePacket();
   private:
@@ -21,4 +19,4 @@ class Transmitter : public cSimpleModule {
     int fromChannelGateId;
 };
 
-#endif /* TRANSMITTER_H_ */
+#endif /* __WLAN_TRANSMITTER_H_ */

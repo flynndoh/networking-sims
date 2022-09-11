@@ -33,23 +33,22 @@ void Channel::finish()
     toTransmitterGateIds = nullptr;
 }
 
-void Channel::handleMessage(cMessage *msg) {
+void Channel::handleMessage(omnetpp::cMessage *msg) {
     // Attempt to handle the message as a SignalStart*.
     tryHandleMessageAnyGate(msg, SignalStart*, handleSignalMessage);
 
     // Attempt to handle the message as a SignalStop*.
     tryHandleMessageAnyGate(msg, SignalStop*, handleSignalMessage);
 
-    EV << HERE << "ERROR: Received a message that we shouldn't have received!"
-               << endl;
+    EV << HERE << "ERROR: Received a message that we shouldn't have received!" << std::endl;
     error("Shouldn't get here");
     delete msg;
 }
 
-void Channel::handleSignalMessage(cMessage *msg) {
+void Channel::handleSignalMessage(omnetpp::cMessage *msg) {
     // Deep copy the message and send to the transmitters.
     for (int i = 0; i < numTransmitters; i++) {
-        cMessage *copy = msg->dup();
+        omnetpp::cMessage *copy = msg->dup();
         send(copy, toTransmitterGateIds[i]);
     }
 

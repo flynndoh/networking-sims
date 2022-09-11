@@ -2,8 +2,8 @@
 
 Define_Module(PacketSink);
 
-simsignal_t delay = cComponent::registerSignal("delay");
-simsignal_t gap = cComponent::registerSignal("gap");
+omnetpp::simsignal_t delay = omnetpp::cComponent::registerSignal("delay");
+omnetpp::simsignal_t gap = omnetpp::cComponent::registerSignal("gap");
 
 void PacketSink::initialize() {
     // Extract simulation gates from NED file.
@@ -21,13 +21,13 @@ void PacketSink::finish()
     recordScalar("numReceived", numReceived);
 }
 
-void PacketSink::handleMessage(cMessage *msg) {
+void PacketSink::handleMessage(omnetpp::cMessage *msg) {
     tryHandleMessage(msg, AppMessage*, fromMACGateId, handleAppMessage);
     error("ERROR: message is an unexpected type.");
 }
 
 void PacketSink::handleAppMessage(AppMessage *msg) {
-    simtime_t now = simTime();
+    omnetpp::simtime_t now = omnetpp::simTime();
     bool isSequenceNumberValid = false;
 
     int senderId = msg->getSenderId();
@@ -63,7 +63,7 @@ void PacketSink::handleAppMessage(AppMessage *msg) {
                   << msg->getTimeStamp() << ", senderId = "
                   << msg->getSenderId() << ", sequenceNumber = "
                   << msg->getSequenceNumber() << ", msgSize = "
-                  << msg->getMsgSize() << endl;
+                  << msg->getMsgSize() << std::endl;
 
         // Emit statistic for delay.
         emit(delay, now - msg->getTimeStamp());
@@ -72,7 +72,7 @@ void PacketSink::handleAppMessage(AppMessage *msg) {
         emit(gap, currentSeqno - transmitterLastSeqno.find(senderId)->second);
 
     } else {
-        EV << HERE << "received the same message again!" << endl;
+        EV << HERE << "received the same message again!" << std::endl;
     }
 
     delete msg;
