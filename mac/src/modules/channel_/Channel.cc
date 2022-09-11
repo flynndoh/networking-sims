@@ -42,7 +42,7 @@ void Channel::handleMessage(omnetpp::cMessage *msg) {
     tryHandleMessageAnyGate(msg, SignalStop*, handleSignalMessage);
 
     EV << HERE << "ERROR: Received a message that we shouldn't have received!" << std::endl;
-    error("Shouldn't get here");
+    error("Channel::handleMessage: Shouldn't get here");
     delete msg;
 }
 

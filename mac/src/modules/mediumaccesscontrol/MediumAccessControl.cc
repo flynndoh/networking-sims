@@ -103,7 +103,7 @@ void MediumAccessControl::handleSelfMessage(omnetpp::cMessage *msg) {
     }
 
     EV << HERE << "ERROR: self-message is of unexpected type." << std::endl;
-    error("Shouldn't get here");
+    error("MediumAccessControl::handleSelfMessage: Shouldn't get here");
     delete msg; // Prevent memory leaks.
 }
 
@@ -120,7 +120,7 @@ void MediumAccessControl::handleMessage(omnetpp::cMessage *msg) {
 
     // If we get here we have received a message that we didn't expect :(
     EV << HERE << "ERROR: msg is an unexpected type." << std::endl;
-    error("Shouldn't get here");
+    error("MediumAccessControl::handleMessage: Shouldn't get here");
     delete msg;
 }
 
@@ -155,7 +155,7 @@ void MediumAccessControl::handleAppMessage(AppMessage *appMessage) {
 
         send(appResponse, toHigherLayerGateId);
     } catch (std::exception ex) {
-        error("Shouldn't get here");
+        error("MediumAccessControl::handleAppMessage: Shouldn't get here");
     }
 }
 
@@ -311,7 +311,7 @@ void MediumAccessControl::processMacBuffer(omnetpp::cMessage *msg) {
             break;
         }
         default: {
-            error("Shouldn't get here as the state machine should be exhaustive. Is there some memory corruption going on?");
+            error("MediumAccessControl::processMacBuffer: Shouldn't get here as the state machine should be exhaustive. Is there some memory corruption going on?");
             break;
         }
     }
@@ -356,7 +356,7 @@ void MediumAccessControl::handleMacMessage(MacMessage *macMessage) {
             break;
         }
         default: {
-            error("Shouldn't get here. Exhaustive switch statement. Could indicate memory corruption.");
+            error("MediumAccessControl::handleMacMessage: Shouldn't get here. Exhaustive switch statement. Could indicate memory corruption.");
             break;
         }
     }

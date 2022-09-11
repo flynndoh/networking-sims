@@ -23,7 +23,7 @@ void PacketSink::finish()
 
 void PacketSink::handleMessage(omnetpp::cMessage *msg) {
     tryHandleMessage(msg, AppMessage*, fromMACGateId, handleAppMessage);
-    error("ERROR: message is an unexpected type.");
+    error("PacketSink::handleMessage: ERROR: message is an unexpected type.");
 }
 
 void PacketSink::handleAppMessage(AppMessage *msg) {

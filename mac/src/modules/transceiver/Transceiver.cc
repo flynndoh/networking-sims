@@ -78,7 +78,7 @@ void Transceiver::handleSelfMessage(omnetpp::cMessage *msg) {
     }
 
     EV << HERE << "ERROR: self-message is of unexpected type." << std::endl;
-    error("Shouldn't get here");
+    error("Transceiver::handleSelfMessage: Shouldn't get here");
     delete msg; // prevent memory leaks
 }
 
@@ -93,7 +93,7 @@ void Transceiver::handleMessage(omnetpp::cMessage *msg) {
     tryHandleMessageAnyGate(msg, TransmissionRequest*, handleTransmissionRequest);
 
     // Unexpected message if we get to this point.
-    error("ERROR: msg is an unexpected type.");
+    error("Transceiver::handleMessage: msg is an unexpected type.");
 }
 
 void Transceiver::handleSignalStart(SignalStart *msg) {
@@ -108,7 +108,7 @@ void Transceiver::handleSignalStart(SignalStart *msg) {
     // Check if signal of the same ID is currently transmitting.
     if (currentTransmissions.find(msg->getIdentifier()) != currentTransmissions.end()) {
         EV << HERE << "ERROR: Detected new signal transmission for an already transmitting Node." << std::endl;
-        error("Aborted, check logs.");
+        error("Transceiver::handleSignalStart: Aborted, check logs.");
     }
 
     // Check for collisions on the channel.
@@ -158,7 +158,7 @@ void Transceiver::handleSignalStop(SignalStop *msg) {
 
     if (storedSignalStart == nullptr) {
         EV << HERE << "ERROR: Attempted to stop a signal that wasn't being transmitted from any Node." << std::endl;
-        error("Aborted, check logs.");
+        error("Transceiver::handleSignalStop: Aborted, check logs.");
     }
 
     // If there is a collision, simply remove it from the current transmissions and move on.
@@ -320,7 +320,7 @@ void Transceiver::processStartOfTransmission() {
         EV << HERE
            << "ERROR: Trying to process the transmission request but the currentTransmissionMacMessage was null!"
            << std::endl;
-        error("Aborted, check error logs!");
+        error("Transceiver::processStartOfTransmission: Aborted, check error logs!");
     }
 
     double packetLengthBits = currentTransmissionMacMessage->getBitLength();

@@ -26,6 +26,7 @@ void PacketGenerator::initialize() {
 void PacketGenerator::finish()
 {
     recordScalar("numSent", numSent);
+    cancelAndDelete(readyMessage);
 }
 
 double PacketGenerator::getIatDistribution(void) {
@@ -46,7 +47,7 @@ void PacketGenerator::handleMessage(omnetpp::cMessage *msg) {
         }
 
         EV << HERE << "CRITICAL: Received an unexpected self-message" << std::endl;
-        error("Received an unexpected self-message");
+        error("PacketGenerator::handleMessage: Received an unexpected self-message");
         delete msg;
         return;
     }
@@ -55,7 +56,7 @@ void PacketGenerator::handleMessage(omnetpp::cMessage *msg) {
     tryHandleMessage(msg, AppResponse*, fromMacGateId, handleAppResponse);
 
     EV << HERE << "ERROR: msg is not an AppResponse." << std::endl;
-    error("Should not get here");
+    error("PacketGenerator::handleMessage: Should not get here");
     delete msg; // Prevent memory leaks.
 }
 
