@@ -11,7 +11,7 @@ class FifoBufferEmptyException : public std::exception {};
 template <typename T> class FifoBuffer {
   public:
     FifoBuffer(int length);
-    void push(T item);
+    void push(const T& item);
     T pop(void);
     bool isEmpty(void);
 
@@ -33,7 +33,7 @@ template <typename T> FifoBuffer<T>::FifoBuffer(int length)
 }
 
 // Throws `FifoBufferFullException` when attempting to push to an already full buffer.
-template <typename T> void FifoBuffer<T>::push(T item)
+template <typename T> void FifoBuffer<T>::push(const T& item)
 {
     if (queue.size() < length)
     {
