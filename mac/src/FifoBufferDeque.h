@@ -1,5 +1,5 @@
-#ifndef FIFOBUFFER_H_
-#define FIFOBUFFER_H_
+#ifndef FIFOBUFFERDEQUE_H_
+#define FIFOBUFFERDEQUE_H_
 
 #include <queue>
 #include "Utils.h"
@@ -8,9 +8,9 @@ class FifoBufferInitialisationException : public std::exception {};
 class FifoBufferFullException : public std::exception {};
 class FifoBufferEmptyException : public std::exception {};
 
-template <typename T> class FifoBuffer {
+template <typename T> class FifoBufferDeque {
   public:
-    FifoBuffer(int length);
+    FifoBufferDeque(int length);
     void push(const T& item);
     T pop(void);
     bool isEmpty(void);
@@ -21,7 +21,7 @@ template <typename T> class FifoBuffer {
 };
 
 // Throws `FifoBufferInitialisationException` when length is not a positive integer.
-template <typename T> FifoBuffer<T>::FifoBuffer(int length)
+template <typename T> FifoBufferDeque<T>::FifoBufferDeque(int length)
 {
     if (length <= 0)
     {
@@ -33,7 +33,7 @@ template <typename T> FifoBuffer<T>::FifoBuffer(int length)
 }
 
 // Throws `FifoBufferFullException` when attempting to push to an already full buffer.
-template <typename T> void FifoBuffer<T>::push(const T& item)
+template <typename T> void FifoBufferDeque<T>::push(const T& item)
 {
     if (queue.size() < length)
     {
@@ -46,7 +46,7 @@ template <typename T> void FifoBuffer<T>::push(const T& item)
 }
 
 // Throws `FifoBufferEmptyException` when attempting to pop from an empty buffer.
-template <typename T> T FifoBuffer<T>::pop(void) {
+template <typename T> T FifoBufferDeque<T>::pop(void) {
     T result;
     if (queue.empty())
     {
@@ -60,8 +60,8 @@ template <typename T> T FifoBuffer<T>::pop(void) {
     }
 }
 
-template <typename T> bool FifoBuffer<T>::isEmpty(void) {
+template <typename T> bool FifoBufferDeque<T>::isEmpty(void) {
     return queue.empty();
 }
 
-#endif /* FIFOBUFFER_H_ */
+#endif /* FIFOBUFFERDEQUE_H_ */

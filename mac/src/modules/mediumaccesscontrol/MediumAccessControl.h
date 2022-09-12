@@ -2,7 +2,7 @@
 #define __MAC_MEDIUMACCESSCONTROL_H_
 
 #include <omnetpp.h>
-#include "../../FifoBuffer.h"
+#include "../../FifoBufferDeque.h"
 #include "../../Utils.h"
 #include "../../messages/application/AppResponse_m.h"
 #include "../../messages/application/AppMessage_m.h"
@@ -13,7 +13,6 @@
 #include "../../messages/transmission/TransmissionConfirmStatus_m.h"
 #include "../../messages/transmission/TransmissionRequest_m.h"
 #include "../../messages/transmission/TransmissionIndication_m.h"
-#include "../../FifoBuffer.h"
 
 enum MediumAccessControlState
 {
@@ -57,7 +56,7 @@ class MediumAccessControl final : public omnetpp::cSimpleModule {
     MediumAccessControlState state;
 
     // Fifo buffer that contains all application layer messages waiting to be sent.
-    FifoBuffer<AppMessage*> * macBuffer = nullptr;
+    FifoBufferDeque<AppMessage*> * macBuffer = nullptr;
 
     // Self messages.
     omnetpp::cMessage* triggerMacBufferProcess = nullptr;
