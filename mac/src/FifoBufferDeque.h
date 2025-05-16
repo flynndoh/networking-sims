@@ -2,7 +2,6 @@
 #define FIFOBUFFERDEQUE_H_
 
 #include <queue>
-#include "Utils.h"
 
 class FifoBufferInitialisationException : public std::exception {};
 class FifoBufferFullException : public std::exception {};

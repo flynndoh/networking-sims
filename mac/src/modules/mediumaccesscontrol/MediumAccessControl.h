@@ -3,6 +3,7 @@
 
 #include <omnetpp.h>
 #include "../../FifoBufferDeque.h"
+#include "../../CircularFifoBuffer.h"
 #include "../../Utils.h"
 #include "../../messages/application/AppResponse_m.h"
 #include "../../messages/application/AppMessage_m.h"
@@ -56,7 +57,7 @@ class MediumAccessControl final : public omnetpp::cSimpleModule {
     MediumAccessControlState state;
 
     // Fifo buffer that contains all application layer messages waiting to be sent.
-    FifoBufferDeque<AppMessage*> * macBuffer = nullptr;
+    CircularFifoBuffer<AppMessage*> * macBuffer = nullptr;
 
     // Self messages.
     omnetpp::cMessage* triggerMacBufferProcess = nullptr;

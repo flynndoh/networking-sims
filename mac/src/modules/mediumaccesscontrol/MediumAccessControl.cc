@@ -23,7 +23,7 @@ void MediumAccessControl::initialize() {
     assert(toHigherLayerGateId != -1);
 
     // Create the FIFO buffer.
-    macBuffer = new FifoBufferDeque<AppMessage*>(bufferSize);
+    macBuffer = new CircularFifoBuffer<AppMessage*>(bufferSize);
     assert(macBuffer != nullptr);
 
     // Set up self-messages.
